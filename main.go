@@ -9,6 +9,11 @@ import (
 
 const StyleDefault tcell.Style = 0
 
+type State struct {
+	screen tcell.Screen
+	runes  []rune
+}
+
 func initScreen() tcell.Screen {
 	screen, err := tcell.NewScreen()
 	if err != nil {
@@ -24,19 +29,20 @@ func initScreen() tcell.Screen {
 	return screen
 }
 
-func main() {
-
-	var content string = "Print that"
-	var combc string = "And that"
-	combin := []rune(combc)
-
-	screen := initScreen()
-	screen.Clear()
-	// width, height := screen.Size()
-
-	for x, char := range content {
-		screen.SetContent(x, 1, char, combin, StyleDefault)
+func render(state *State) {
+	state.screen.Clear()
+	for x, r := range state.runes {
+		state.screen.SetContent(x, 1, r, nil, StyleDefault)
 	}
-	screen.Show()
+	state.screen.Show()
+}
+
+func main() {
+	runes := []rune{'Ƿ', 'Ʈ', '˨', 'Ϩ'}
+	screen := initScreen()
+
+	state := State{screen, runes}
+
+	render(&state)
 	// screen.Fini()
 }
