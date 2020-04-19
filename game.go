@@ -10,17 +10,17 @@ type Game struct {
 }
 
 func (g Game) display() {
-	var foregroundColor tcell.Style
+	var style tcell.Style
 	for y, sliceY := range g.state {
 		for x, cell := range sliceY {
 
 			if cell == true {
-				foregroundColor = tcell.StyleDefault.Foreground(tcell.ColorWhite)
+				style = tcell.StyleDefault.Background(tcell.ColorBeige)
 			} else {
-				foregroundColor = tcell.StyleDefault.Foreground(tcell.ColorBlack)
+				style = tcell.StyleDefault.Background(tcell.ColorDarkGray)
 			}
 
-			g.screen.SetContent(x, y, ' ', nil, foregroundColor)
+			g.screen.SetContent(x, y, ' ', nil, style)
 		}
 	}
 	g.screen.Show()
