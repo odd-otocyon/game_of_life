@@ -24,7 +24,7 @@ func initScreen() tcell.Screen {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
 	}
-	screen.EnableMouse()
+	// screen.EnableMouse()
 
 	return screen
 }
