@@ -35,5 +35,6 @@ func initScreen() tcell.Screen {
 
 func main() {
 	game := initGame()
+	fillRandomState(&game)
 	game.display()
 }
