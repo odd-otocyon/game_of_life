@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/gdamore/tcell"
 )
@@ -10,10 +11,12 @@ import (
 func initGame() Game {
 	screen := initScreen()
 	state := [24][80]bool{{false}}
+	ticker := time.NewTicker(50 * time.Millisecond)
 
 	game := Game{
 		screen,
 		state,
+		ticker,
 	}
 	return game
 }
@@ -35,6 +38,11 @@ func initScreen() tcell.Screen {
 
 func main() {
 	game := initGame()
-	fillRandomState(&game)
-	game.display()
+	game.randomState()
+	for {
+		select {
+		case <-game.ticker.C:
+			game.display()
+		}
+	}
 }
