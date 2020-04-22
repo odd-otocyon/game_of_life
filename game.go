@@ -11,6 +11,8 @@ type Game struct {
 	screen tcell.Screen
 	state  [24][80]bool
 	ticker *time.Ticker
+	stop   bool
+	event  chan Event
 }
 
 func (game Game) display() {
@@ -31,6 +33,22 @@ func (game Game) display() {
 	game.screen.Show()
 }
 
+func (game *Game) Loop() {
+	game.randomState()
+	for game.stop != true {
+		select {
+		case event := <-game.event:
+			switch event.Type {
+			case "done":
+				game.stop = true
+			}
+		case <-game.ticker.C:
+			game.randomState()
+			game.display()
+		}
+	}
+}
+
 func (game *Game) randomState() {
 	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < cap(game.state); i++ {
@@ -39,7 +57,3 @@ func (game *Game) randomState() {
 		}
 	}
 }
-
-// func (game *Game) nextGeneration() {
-
-// }

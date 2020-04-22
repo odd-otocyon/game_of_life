@@ -12,11 +12,15 @@ func initGame() Game {
 	screen := initScreen()
 	state := [24][80]bool{{false}}
 	ticker := time.NewTicker(50 * time.Millisecond)
+	stop := false
+	event := make(chan Event)
 
 	game := Game{
 		screen,
 		state,
 		ticker,
+		stop,
+		event,
 	}
 	return game
 }
@@ -38,11 +42,6 @@ func initScreen() tcell.Screen {
 
 func main() {
 	game := initGame()
-	game.randomState()
-	for {
-		select {
-		case <-game.ticker.C:
-			game.display()
-		}
-	}
+	go inputLoop(&game)
+	game.Loop()
 }
