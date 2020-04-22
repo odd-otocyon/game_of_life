@@ -11,7 +11,7 @@ import (
 func initGame() Game {
 	screen := initScreen()
 	state := [24][80]bool{{false}}
-	ticker := time.NewTicker(50 * time.Millisecond)
+	ticker := time.NewTicker(100 * time.Millisecond)
 	stop := false
 	event := make(chan Event)
 

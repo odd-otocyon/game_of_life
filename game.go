@@ -24,7 +24,7 @@ func (game Game) display() {
 			if cell {
 				style = tcell.StyleDefault.Background(tcell.ColorBeige)
 			} else {
-				style = tcell.StyleDefault.Background(tcell.ColorDarkGray)
+				style = tcell.StyleDefault.Background(tcell.GetColor("#403f3f"))
 			}
 
 			game.screen.SetContent(x, y, ' ', nil, style)
