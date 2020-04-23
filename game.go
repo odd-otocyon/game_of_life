@@ -9,7 +9,7 @@ import (
 
 type Game struct {
 	screen tcell.Screen
-	state  [24][80]bool
+	state  [24][80]Cell
 	ticker *time.Ticker
 	stop   bool
 	event  chan Event
@@ -18,10 +18,10 @@ type Game struct {
 func (g Game) display() {
 	var style tcell.Style
 	g.screen.Clear()
-	for y, sliceY := range g.state {
-		for x, cell := range sliceY {
+	for y, slice := range g.state {
+		for x, cell := range slice {
 
-			if cell {
+			if cell.alive {
 				style = tcell.StyleDefault.Background(tcell.ColorBeige)
 			} else {
 				style = tcell.StyleDefault.Background(tcell.GetColor("#403f3f"))
@@ -53,7 +53,7 @@ func (g *Game) randomState() {
 	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < cap(g.state); i++ {
 		for j := 0; j < cap(g.state[i]); j++ {
-			g.state[i][j] = rand.Float32() < 0.5
+			g.state[i][j].alive = rand.Float32() < 0.5
 		}
 	}
 }

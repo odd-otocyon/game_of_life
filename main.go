@@ -10,7 +10,7 @@ import (
 
 func initGame() Game {
 	screen := initScreen()
-	state := [24][80]bool{{false}}
+	state := [24][80]Cell{{Cell{alive: false}}}
 	ticker := time.NewTicker(100 * time.Millisecond)
 	stop := false
 	event := make(chan Event)
