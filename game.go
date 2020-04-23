@@ -15,10 +15,10 @@ type Game struct {
 	event  chan Event
 }
 
-func (game Game) display() {
+func (g Game) display() {
 	var style tcell.Style
-	game.screen.Clear()
-	for y, sliceY := range game.state {
+	g.screen.Clear()
+	for y, sliceY := range g.state {
 		for x, cell := range sliceY {
 
 			if cell {
@@ -27,33 +27,33 @@ func (game Game) display() {
 				style = tcell.StyleDefault.Background(tcell.GetColor("#403f3f"))
 			}
 
-			game.screen.SetContent(x, y, ' ', nil, style)
+			g.screen.SetContent(x, y, ' ', nil, style)
 		}
 	}
-	game.screen.Show()
+	g.screen.Show()
 }
 
-func (game *Game) Loop() {
-	game.randomState()
-	for game.stop != true {
+func (g *Game) Loop() {
+	g.randomState()
+	for g.stop != true {
 		select {
-		case event := <-game.event:
+		case event := <-g.event:
 			switch event.Type {
 			case "done":
-				game.stop = true
+				g.stop = true
 			}
-		case <-game.ticker.C:
-			game.randomState()
-			game.display()
+		case <-g.ticker.C:
+			g.randomState()
+			g.display()
 		}
 	}
 }
 
-func (game *Game) randomState() {
+func (g *Game) randomState() {
 	rand.Seed(time.Now().UnixNano())
-	for i := 0; i < cap(game.state); i++ {
-		for j := 0; j < cap(game.state[i]); j++ {
-			game.state[i][j] = rand.Float32() < 0.5
+	for i := 0; i < cap(g.state); i++ {
+		for j := 0; j < cap(g.state[i]); j++ {
+			g.state[i][j] = rand.Float32() < 0.5
 		}
 	}
 }
