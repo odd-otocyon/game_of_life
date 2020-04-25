@@ -10,14 +10,17 @@ import (
 
 func initGame() Game {
 	screen := initScreen()
-	state := [24][80]Cell{{Cell{alive: false}}}
+	screenWidth, screenHeigth := 80, 24
+	universe := make([]Cell, screenWidth*screenHeigth)
 	ticker := time.NewTicker(100 * time.Millisecond)
 	stop := false
 	event := make(chan Event)
 
 	game := Game{
 		screen,
-		state,
+		screenWidth,
+		screenHeigth,
+		universe,
 		ticker,
 		stop,
 		event,

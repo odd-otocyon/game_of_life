@@ -8,33 +8,33 @@ import (
 )
 
 type Game struct {
-	screen tcell.Screen
-	state  [24][80]Cell
-	ticker *time.Ticker
-	stop   bool
-	event  chan Event
+	screen       tcell.Screen
+	screenWidth  int
+	screenHeigth int
+	universe     []Cell
+	ticker       *time.Ticker
+	stop         bool
+	event        chan Event
 }
 
 func (g Game) display() {
 	var style tcell.Style
 	g.screen.Clear()
-	for y, slice := range g.state {
-		for x, cell := range slice {
+	for index, cell := range g.universe {
 
-			if cell.alive {
-				style = tcell.StyleDefault.Background(tcell.ColorBeige)
-			} else {
-				style = tcell.StyleDefault.Background(tcell.GetColor("#403f3f"))
-			}
-
-			g.screen.SetContent(x, y, ' ', nil, style)
+		if cell.alive {
+			style = tcell.StyleDefault.Background(tcell.GetColor("#403f3f"))
+		} else {
+			style = tcell.StyleDefault.Background(tcell.ColorBeige)
 		}
+
+		g.screen.SetContent(index%g.screenWidth, index/g.screenWidth, ' ', nil, style)
 	}
 	g.screen.Show()
 }
 
 func (g *Game) Loop() {
-	g.randomState()
+	g.randomuniverse()
 	for g.stop != true {
 		select {
 		case event := <-g.event:
@@ -43,17 +43,26 @@ func (g *Game) Loop() {
 				g.stop = true
 			}
 		case <-g.ticker.C:
-			g.randomState()
+			g.randomuniverse()
 			g.display()
 		}
 	}
 }
 
-func (g *Game) randomState() {
+// func (g *Game) nextuniverse() {
+// 	for y := 0; i < cap(g.universe); i++ {
+// 		for x := 0; j < cap(g.universe[i]); j++ {
+
+// }
+
+func (g *Game) randomuniverse() {
 	rand.Seed(time.Now().UnixNano())
-	for i := 0; i < cap(g.state); i++ {
-		for j := 0; j < cap(g.state[i]); j++ {
-			g.state[i][j].alive = rand.Float32() < 0.5
+	var index int
+	for row := 0; row < g.screenHeigth; row++ {
+		for column := 0; column < g.screenWidth; column++ {
+			index = row*g.screenWidth + column
+			// fmt.Println(index)
+			g.universe[index].alive = rand.Float32() < 0.5
 		}
 	}
 }
