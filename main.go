@@ -10,9 +10,9 @@ import (
 
 func initGame() Game {
 	screen := initScreen()
-	width, heigth := 80, 24
+	width, heigth := screen.Size()
 	universe := make([]bool, width*heigth)
-	ticker := time.NewTicker(300 * time.Millisecond)
+	ticker := time.NewTicker(50 * time.Millisecond)
 	stop := false
 	event := make(chan Event)
 

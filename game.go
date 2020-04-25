@@ -18,17 +18,18 @@ type Game struct {
 }
 
 func (g Game) display() {
-	var style tcell.Style
+	style := tcell.StyleDefault.Background(tcell.ColorBeige).Foreground(tcell.GetColor("#403f3f"))
+	var symbol rune
 	g.screen.Clear()
 	for index, cell := range g.universe {
 
-		if cell {
-			style = tcell.StyleDefault.Background(tcell.GetColor("#403f3f"))
+		if cell == true {
+			symbol = '■'
 		} else {
-			style = tcell.StyleDefault.Background(tcell.ColorBeige)
+			symbol = ' '
 		}
 
-		g.screen.SetContent(index%g.width, index/g.width, ' ', nil, style)
+		g.screen.SetContent(index%g.width, index/g.width, symbol, nil, style)
 	}
 	g.screen.Show()
 }
@@ -43,8 +44,8 @@ func (g *Game) Loop() {
 				g.stop = true
 			}
 		case <-g.ticker.C:
-			g.computeNextGeneration()
 			g.display()
+			g.computeNextGeneration()
 		}
 	}
 }
@@ -56,7 +57,8 @@ func (g *Game) getIndex(row, col int) int {
 func (g *Game) neighborCount(row, col int) int {
 	var count int
 	for _, deltaRow := range []int{g.heigth - 1, 0, 1} {
-		for _, deltaCol := range []int{g.heigth - 1, 0, 1} {
+		for _, deltaCol := range []int{g.width - 1, 0, 1} {
+
 			if deltaCol == 0 && deltaRow == 0 {
 				continue
 			}
@@ -65,7 +67,7 @@ func (g *Game) neighborCount(row, col int) int {
 			neighborCol := (col + deltaCol) % g.width
 			index := g.getIndex(neighborRow, neighborCol)
 
-			if g.universe[index] {
+			if g.universe[index] == true {
 				count++
 			}
 		}
@@ -77,25 +79,24 @@ func (g *Game) computeNextGeneration() {
 	nextGeneration := make([]bool, len(g.universe))
 
 	var index int
-	var cell bool
 	var cellNextState bool
 	var aliveNeighbors int
 
 	for row := 0; row < g.heigth; row++ {
 		for col := 0; col < g.width; col++ {
 			index = g.getIndex(row, col)
-			cell = g.universe[index]
+			cell := g.universe[index]
 			aliveNeighbors = g.neighborCount(row, col)
 
 			switch {
-			case cell && aliveNeighbors < 2:
+			case cell == true && (aliveNeighbors < 2 || aliveNeighbors > 3):
 				cellNextState = false
-			case cell && (aliveNeighbors == 2 || aliveNeighbors == 3):
+			case cell == true && (aliveNeighbors == 2 || aliveNeighbors == 3):
 				cellNextState = true
-			case cell && aliveNeighbors > 3:
-				cellNextState = false
 			case cell == false && aliveNeighbors == 3:
 				cellNextState = true
+			default:
+				cellNextState = false
 			}
 
 			nextGeneration[index] = cellNextState
@@ -103,12 +104,6 @@ func (g *Game) computeNextGeneration() {
 	}
 	g.universe = nextGeneration
 }
-
-// func (g *Game) nextuniverse() {
-// 	for y := 0; i < cap(g.universe); i++ {
-// 		for x := 0; j < cap(g.universe[i]); j++ {
-
-// }
 
 func (g *Game) randomuniverse() {
 	rand.Seed(time.Now().UnixNano())
@@ -118,5 +113,19 @@ func (g *Game) randomuniverse() {
 			index = g.getIndex(row, col)
 			g.universe[index] = rand.Float32() < 0.5
 		}
+	}
+}
+
+func (g *Game) tests() {
+	type Vertex struct {
+		row int
+		col int
+	}
+
+	points := []Vertex{{10, 41}, {10, 42}, {10, 43}, {11, 40}, {11, 41}, {11, 42}}
+
+	for _, point := range points {
+		index := g.getIndex(point.row, point.col)
+		g.universe[index] = true
 	}
 }
