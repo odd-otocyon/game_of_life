@@ -10,16 +10,16 @@ import (
 
 func initGame() Game {
 	screen := initScreen()
-	screenWidth, screenHeigth := 80, 24
-	universe := make([]Cell, screenWidth*screenHeigth)
-	ticker := time.NewTicker(100 * time.Millisecond)
+	width, heigth := 80, 24
+	universe := make([]bool, width*heigth)
+	ticker := time.NewTicker(300 * time.Millisecond)
 	stop := false
 	event := make(chan Event)
 
 	game := Game{
 		screen,
-		screenWidth,
-		screenHeigth,
+		width,
+		heigth,
 		universe,
 		ticker,
 		stop,
