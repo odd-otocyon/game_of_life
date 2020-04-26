@@ -4,7 +4,7 @@ import (
 	"github.com/gdamore/tcell"
 )
 
-func inputLoop(game *Game) {
+func inputLoop(game *game) {
 	for {
 		eventPoll := game.screen.PollEvent()
 		switch eventType := eventPoll.(type) {

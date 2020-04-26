@@ -8,7 +8,7 @@ import (
 	"github.com/gdamore/tcell"
 )
 
-func initGame() Game {
+func initGame() game {
 	screen := initScreen()
 	width, heigth := screen.Size()
 	universe := make([]bool, width*heigth)
@@ -16,7 +16,7 @@ func initGame() Game {
 	stop := false
 	event := make(chan Event)
 
-	game := Game{
+	game := game{
 		screen,
 		width,
 		heigth,
@@ -46,5 +46,5 @@ func initScreen() tcell.Screen {
 func main() {
 	game := initGame()
 	go inputLoop(&game)
-	game.Loop()
+	game.loop()
 }
